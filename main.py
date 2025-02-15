@@ -52,16 +52,23 @@ class Main:
                 "http":"http://{0}".format(choice(proxies_file)),
                 "https":"https://{0}".format(choice(proxies_file))
             }
+            print(f"Proxy formateado: {proxies}")
         elif self.proxy_type == 2:
+            proxy = choice(proxies_file).strip()
+            proxy_str = proxy[0]
+            usuario, contraseña, host, puerto = proxy.split(':')
             proxies = {
-                "http":"socks4://{0}".format(choice(proxies_file)),
-                "https":"socks4://{0}".format(choice(proxies_file))
+                "http":"socks4://{0}:{1}@{2}:{3}".format(usuario, contraseña, host, puerto),
+                "https":"socks4://{0}:{1}@{2}:{3}".format(usuario, contraseña, host, puerto) #"socks4://{0}".format(choice(proxies_file))
             }
         else:
             proxies = {
                 "http":"socks5://{0}".format(choice(proxies_file)),
                 "https":"socks5://{0}".format(choice(proxies_file))
             }
+        proxies["http"] = proxies["http"].replace("http://http://", "http://")
+        proxies["https"] = proxies["https"].replace("https://https://", "https://")
+        print(f"Proxy formateado: {proxies}")
         return proxies
         
 
@@ -139,7 +146,7 @@ class Main:
 
             create_response = ''
 
-            create_url = 'https://spclient.wg.spotify.com/signup/public/v1/account'
+            create_url = 'https://www.spotify.com/us/signup?forward_url=https%3A%2F%2Fopen.spotify.com%2Fintl-es'
             
 
             credentails = self.GenCredentails()
@@ -149,7 +156,7 @@ class Main:
             create_response = ''
 
             if self.use_proxy == 1:
-                create_response = requests.post(create_url, data=payload, headers=create_headers,proxies=self.GetRandomProxyForAccountCreator(),timeout=5)
+                create_response = requests.post(create_url, data=payload, headers=create_headers,proxies=self.GetRandomProxyForAccountCreator(),timeout=10)
             else:
                 create_response = requests.post(create_url, data=payload, headers=create_headers)
 
@@ -168,8 +175,8 @@ class Main:
                     self.SpotifyCreator()
             else:
                 self.SpotifyCreator()
-        except:
-            self.SpotifyCreator()
+        except Exception as e:
+            print(f"aparecio un error: {e}")
 
     def Login(self,username,password,driver):
         try:
