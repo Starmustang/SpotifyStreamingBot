@@ -49,8 +49,8 @@ class Main:
         proxies = {}
         if self.proxy_type == 1:
             proxies = {
-                "http":"http://{0}".format(choice(proxies_file)),
-                "https":"https://{0}".format(choice(proxies_file))
+                "http":choice(proxies_file),
+                "https":choice(proxies_file)
             }
             print(f"Proxy formateado: {proxies}")
         elif self.proxy_type == 2:
@@ -66,8 +66,8 @@ class Main:
                 "http":"socks5://{0}".format(choice(proxies_file)),
                 "https":"socks5://{0}".format(choice(proxies_file))
             }
-        proxies["http"] = proxies["http"].replace("http://http://", "http://")
-        proxies["https"] = proxies["https"].replace("https://https://", "https://")
+        # proxies["http"] = proxies["http"].replace("http://http://", "http://")
+        # proxies["https"] = proxies["https"].replace("https://https://", "https://")
         print(f"Proxy formateado: {proxies}")
         return proxies
         
@@ -291,8 +291,10 @@ class Main:
     def StartStream(self,username,password):
         if self.stream_type == 1:
             self.StreamArtist(username,password)
+            print(f"streaming iniciado correctamente para artista {username}")
         else:
             self.StreamPlaylistOrAlbum(username,password)
+            print(f"streaming iniciado correctamente para playlist o album {username}")
 
     def Start(self):
             if self.method == 1:
@@ -302,14 +304,17 @@ class Main:
                         username = combo.split(':')[0]
                         password = combo.split(':')[-1]
                         ex.submit(self.StartStream,username,password)
+                        print(f"Iniciando streaming para {username}...")
                         if self.wait_before_start > 0:
                             sleep(self.wait_before_start)
+                            print('La informacion que se tomo es esta: {0}:{1}'.format(username,password))
             else:
                 while True:
                     if active_count()<= self.browser_amount:
                         Thread(target=self.SpotifyCreator).start()
                         if self.wait_before_start > 0:
                             sleep(self.wait_before_start)
+                            print('no funciono')
                 
 if __name__ == "__main__":
     main = Main()
